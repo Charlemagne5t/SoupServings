@@ -1,39 +1,67 @@
-import java.util.HashMap;
+import java.util.*;
 
-public class Solution {
+class Solution {
     public double soupServings(int n) {
-        if (n > 4800) {
+        if(n >= 4800) {
             return 1.0;
         }
-        HashMap<String, Double> memo = new HashMap<>();
+        Map<Long, Double> memo = new HashMap<>();
         return dfs(n, n, memo);
     }
 
-    private double dfs(int n1, int n2, HashMap<String, Double> memo) {
-        if (memo.containsKey(n1 + " " + n2)) {
-            return memo.get(n1 + " " + n2);
+    double dfs(int a, int b,  Map<Long, Double> memo) {
+
+        double res1;
+        double res2;
+        double res3;
+        double res4;
+        if(memo.containsKey((long)a + b * (long) 1e9)){
+            return memo.get( (long)a + b * (long) 1e9 );
         }
-        if (n1 <= 0 && n2 <= 0) {
-            return 0.5;
-        }
-        if (n1 <= 0) {
-            return 1.0;
-        }
-        if (n2 <= 0) {
-            return 0.0;
+        if(a - 100 <= 0){
+            if(b == 0){
+                res1 = 0.5;
+            }else res1 = 1;
+        }else {
+            res1 = dfs(a - 100, b, memo);
         }
 
-        double case100_0 = dfs(n1 - 100, n2, memo);
-        double case75_25 = dfs(n1 - 75, n2 - 25, memo);
-        double case50_50 = dfs(n1 - 50, n2 - 50, memo);
-        double case25_75 = dfs(n1 - 25, n2 - 75, memo);
+        if(a - 75 <= 0) {
+            if(b - 25 > 0) {
+                res2 = 1;
+            }else {
+                res2 = 0.5;
+            }
+        }else if(b - 25 <= 0){
+            res2 = 0;
+        }else {
+            res2 = dfs(a - 75, b - 25, memo);
+        }
 
-        double result = (case100_0 + case75_25 + case50_50 + case25_75) / 4;
+        if(a - 50 <= 0) {
+            if(b - 50 > 0) {
+                res3 = 1;
+            }else {
+                res3 = 0.5;
+            }
+        }else if(b - 50 <= 0){
+            res3 = 0;
+        }else {
+            res3 = dfs(a - 50, b - 50, memo);
+        }
 
-        memo.put(n1 + " " + n2, result);
-
-        return result;
-
-
+        if(a - 25 <= 0) {
+            if(b - 75 > 0) {
+                res4 = 1;
+            }else {
+                res4 = 0.5;
+            }
+        }else if(b - 75 <= 0){
+            res4 = 0;
+        }else {
+            res4 = dfs(a - 25, b - 75, memo);
+        }
+        memo.put((long)a + b * (long) 1e9, (res1 + res2 + res3 + res4) / 4);
+        return (res1 + res2 + res3 + res4) / 4;
     }
 }
